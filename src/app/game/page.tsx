@@ -51,7 +51,7 @@ export default function GameHubPage() {
         <span className="text-5xl mb-4 block">🎮</span>
         <h1 className="text-3xl font-bold mb-2">Duck Games</h1>
         <p className="text-muted text-sm">
-          5 mini-games. Zero productivity. Maximum quack.
+          5 mini-games. Zero productivity. Maximum quack. 🦆
         </p>
       </div>
 
