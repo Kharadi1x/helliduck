@@ -8,31 +8,60 @@ if (!apiKey) {
 
 const client = new GoogleGenAI({ apiKey: apiKey || "" });
 
-export async function generateText(prompt: string): Promise<string> {
-  const response = await client.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-  });
+const PRIMARY_MODEL = "gemini-2.5-flash";
+const FALLBACK_MODEL = "gemini-2.0-flash";
 
-  const text = response.text;
-  if (!text) {
-    throw new Error("Gemini returned empty response");
+export async function generateText(prompt: string): Promise<string> {
+  try {
+    const response = await client.models.generateContent({
+      model: PRIMARY_MODEL,
+      contents: prompt,
+    });
+
+    const text = response.text;
+    if (!text) throw new Error("Empty response");
+    return text.trim();
+  } catch (err) {
+    // Fallback to backup model
+    const response = await client.models.generateContent({
+      model: FALLBACK_MODEL,
+      contents: prompt,
+    });
+
+    const text = response.text;
+    if (!text) {
+      throw new Error("Both primary and fallback models returned empty response");
+    }
+    return text.trim();
   }
-  return text.trim();
 }
 
 export async function generateJSON<T>(prompt: string): Promise<T> {
-  const response = await client.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt + "\n\nRespond ONLY with valid JSON. No markdown, no code fences, no extra text.",
-    config: {
-      responseMimeType: "application/json",
-    },
-  });
+  const jsonPrompt = prompt + "\n\nRespond ONLY with valid JSON. No markdown, no code fences, no extra text.";
+  const config = { responseMimeType: "application/json" as const };
 
-  const text = response.text;
-  if (!text) {
-    throw new Error("Gemini returned empty response");
+  try {
+    const response = await client.models.generateContent({
+      model: PRIMARY_MODEL,
+      contents: jsonPrompt,
+      config,
+    });
+
+    const text = response.text;
+    if (!text) throw new Error("Empty response");
+    return JSON.parse(text) as T;
+  } catch (err) {
+    // Fallback to backup model
+    const response = await client.models.generateContent({
+      model: FALLBACK_MODEL,
+      contents: jsonPrompt,
+      config,
+    });
+
+    const text = response.text;
+    if (!text) {
+      throw new Error("Both primary and fallback models returned empty response");
+    }
+    return JSON.parse(text) as T;
   }
-  return JSON.parse(text) as T;
 }
