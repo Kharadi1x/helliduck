@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     PROMPTS.clapback(roast.slice(0, 1000))
   );
 
-  auditLog(ip, "/api/v1/clapback", { roast }, result, Date.now() - start);
+  await auditLog(ip, "/api/v1/clapback", { roast }, result, Date.now() - start);
 
   return Response.json(result);
 }

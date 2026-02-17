@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     PROMPTS.judge(String(sideA).slice(0, 500), String(sideB).slice(0, 500))
   );
 
-  auditLog(ip, "/api/v1/judge", { sideA, sideB }, result, Date.now() - start);
+  await auditLog(ip, "/api/v1/judge", { sideA, sideB }, result, Date.now() - start);
 
   return Response.json(result);
 }

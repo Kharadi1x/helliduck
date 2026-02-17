@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     PROMPTS.excuse(situation.slice(0, 500), Math.min(100, Math.max(0, believability ?? 50)))
   );
 
-  auditLog(ip, "/api/v1/excuse", { situation, believability }, result, Date.now() - start);
+  await auditLog(ip, "/api/v1/excuse", { situation, believability }, result, Date.now() - start);
 
   return Response.json(result);
 }

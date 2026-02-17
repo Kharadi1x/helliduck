@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   const start = Date.now();
   const result = await generateJSON<FortuneResult>(PROMPTS.fortune());
 
-  auditLog(ip, "/api/v1/fortune", null, result, Date.now() - start);
+  await auditLog(ip, "/api/v1/fortune", null, result, Date.now() - start);
 
   return Response.json(result);
 }

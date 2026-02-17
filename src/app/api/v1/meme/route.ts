@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     PROMPTS.meme(template.slice(0, 100), context?.slice(0, 200))
   );
 
-  auditLog(ip, "/api/v1/meme", { template, context }, result, Date.now() - start);
+  await auditLog(ip, "/api/v1/meme", { template, context }, result, Date.now() - start);
 
   return Response.json(result);
 }

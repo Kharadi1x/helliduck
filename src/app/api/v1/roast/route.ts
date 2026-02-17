@@ -69,7 +69,7 @@ export async function POST(request: Request) {
   const start = Date.now();
   const result = await generateJSON<RoastResult>(PROMPTS.roast(url, html, metrics));
 
-  auditLog(ip, "/api/v1/roast", { url }, { ...result, metrics }, Date.now() - start);
+  await auditLog(ip, "/api/v1/roast", { url }, { ...result, metrics }, Date.now() - start);
 
   return Response.json({ ...result, metrics });
 }
