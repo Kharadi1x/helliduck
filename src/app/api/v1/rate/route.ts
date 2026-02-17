@@ -1,6 +1,7 @@
 import { generateJSON } from "@/lib/gemini";
 import { checkRateLimit, getClientIP, rateLimitResponse } from "@/lib/rate-limit";
 import { PROMPTS } from "@/lib/prompts";
+import { auditLog } from "@/lib/audit";
 
 interface RateResult {
   ratings: {
@@ -16,8 +17,8 @@ interface RateResult {
 
 export async function POST(request: Request) {
   const ip = getClientIP(request);
-  const { allowed } = checkRateLimit(ip);
-  if (!allowed) return rateLimitResponse();
+  const { allowed, globalCapHit } = await checkRateLimit(ip);
+  if (!allowed) return rateLimitResponse(globalCapHit);
 
   const body = await request.json();
   const { decision } = body;
@@ -26,7 +27,10 @@ export async function POST(request: Request) {
     return Response.json({ error: "Please describe your decision" }, { status: 400 });
   }
 
+  const start = Date.now();
   const result = await generateJSON<RateResult>(PROMPTS.rate(decision.slice(0, 500)));
+
+  auditLog(ip, "/api/v1/rate", { decision }, result, Date.now() - start);
 
   return Response.json(result);
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Duck Games — Helliduck",
-  description: "5 duck mini-games. Flappy, Runner, Memory, Shooter & Pong.",
+  description: "6 duck mini-games. Flappy, Runner, Memory, Shooter, Pong & Jigsaw.",
 };
 
 const games = [
@@ -42,6 +42,13 @@ const games = [
     href: "/game/pong",
     color: "from-blue-500/20 to-cyan-500/20",
   },
+  {
+    title: "Duck Jigsaw",
+    description: "Scrambled duck. Swap pieces to put it back together.",
+    emoji: "🧩",
+    href: "/game/jigsaw",
+    color: "from-amber-500/20 to-yellow-500/20",
+  },
 ];
 
 export default function GameHubPage() {
@@ -51,7 +58,7 @@ export default function GameHubPage() {
         <span className="text-5xl mb-4 block">🎮</span>
         <h1 className="text-3xl font-bold mb-2">Duck Games</h1>
         <p className="text-muted text-sm">
-          5 mini-games. Zero productivity. Maximum quack. 🦆
+          6 mini-games. Zero productivity. Maximum quack. 🦆
         </p>
       </div>
 
